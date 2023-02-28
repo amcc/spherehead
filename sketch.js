@@ -58,6 +58,7 @@ function modelReady() {
 function draw() {
   background(255);
 
+  text(video.width, 20, 100)
   let locX = mouseX - height / 2;
   let locY = mouseY - width / 2;
    // ambientLight(10, 10, 10);
