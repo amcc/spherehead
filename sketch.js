@@ -27,7 +27,7 @@ confNeeded = 0.1;
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   video = createCapture(VIDEO);
-  video.size(width, height);
+  // video.size(width, height);
 
   // Create a new poseNet method with a single detection
   poseNet = ml5.poseNet(video, modelReady);
