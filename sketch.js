@@ -24,10 +24,59 @@ let pos = {
 lerpSpeed = 0.05;
 confNeeded = 0.1;
 
+let vidWidth, vidHeight;
+let myCanvas;
+
+let constraints = {
+  video: {
+    // mandatory: {
+    //   minWidth: 1280,
+    //   minHeight: 720
+    // },
+    video: {
+      width: { ideal: 640 },
+      height: { ideal: 640 },
+    },
+    optional: [{ maxFrameRate: 20 }],
+  },
+  audio: false,
+};
+
+function getCameraStream() {
+  navigator.mediaDevices
+    .getUserMedia(constraints)
+    .then((mediaStream) => {
+      const video = document.querySelector("video");
+      video.srcObject = mediaStream;
+      video.onloadedmetadata = () => {
+        video.play();
+        // console.log(video)
+        vidWidth = video.width;
+        vidHeight = video.height;
+        myCanvas = createCanvas(
+          windowWidth,
+          (windowWidth * vidHeight) / vidWidth
+        );
+        myCanvas.parent("canvas-parent");
+        let containerEl = document.getElementById("video-parent");
+        // let videoEl = document.getElementsByTagName('video');
+        // console.log(videoEl)
+        containerEl.appendChild(video);
+      };
+    })
+    .catch((err) => {
+      // always check for errors at the end.
+      console.error(`${err.name}: ${err.message}`);
+    });
+}
+
+function preload() {
+  getCameraStream();
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  video = createCapture(VIDEO);
-  video.size(width, height);
+    video = createCapture(constraints, function (stream) {});
 
   // Create a new poseNet method with a single detection
   poseNet = ml5.poseNet(video, modelReady);
@@ -37,10 +86,12 @@ function setup() {
     poses = results;
   });
   // Hide the video element, and just show the canvas
-  video.hide();
+  // video.hide();
   checkbox = createCheckbox("SEE YOURSELF!", false);
-  checkbox.position(10, 10);
+  // checkbox.position(10, 10);
   checkbox.changed(myCheckedEvent);
+  checkbox.parent("#checkbox")
+  textFont("Recursive");
 }
 
 function myCheckedEvent() {
@@ -52,13 +103,11 @@ function myCheckedEvent() {
 }
 
 function modelReady() {
-  // model is loaded
+  select("#status").html("We can see you");
 }
 
 function draw() {
   background(255);
-
-  text(video.width, 20, 100)
   let locX = mouseX - height / 2;
   let locY = mouseY - width / 2;
    // ambientLight(10, 10, 10);
@@ -70,15 +119,15 @@ function draw() {
     let rightEye = poses[0].pose.rightEye;
     let leftEye = poses[0].pose.leftEye;
     if (nose.confidence > confNeeded) {
-      pos.nose.x = lerp(pos.nose.x, nose.x, lerpSpeed);
+      pos.nose.x = lerp(pos.nose.x, width - nose.x, lerpSpeed);
       pos.nose.y = lerp(pos.nose.y, nose.y, lerpSpeed);
     }
     if (rightEye.confidence > confNeeded) {
-      pos.rEye.x = lerp(pos.rEye.x, rightEye.x, lerpSpeed);
+      pos.rEye.x = lerp(pos.rEye.x, width - rightEye.x, lerpSpeed);
       pos.rEye.y = lerp(pos.rEye.y, rightEye.y, lerpSpeed);
     }
     if (leftEye.confidence > confNeeded) {
-      pos.lEye.x = lerp(pos.lEye.x, leftEye.x, lerpSpeed);
+      pos.lEye.x = lerp(pos.lEye.x, width - leftEye.x, lerpSpeed);
       pos.lEye.y = lerp(pos.lEye.y, leftEye.y, lerpSpeed);
     }
 
@@ -113,5 +162,6 @@ function draw() {
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+  resizeCanvas(windowWidth, (windowWidth * vidHeight) / vidWidth);
+  video.size(width, height);
 }

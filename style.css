@@ -1,10 +1,50 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300&display=swap");
+
+html,
 body {
+  position: relative;
   margin: 0;
   padding: 0;
-  
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 100;
+}
+
+p,
+h1,
+#checkbox {
+  margin: 2vw;
+}
+
+/* video {
+  position: absolute;
+  top: 0;
+  z-index: -1;
+} */
+
+#container {
+  position: relative;
+}
+#canvas-parent {
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  opacity: 0.8;
 }
 
 canvas {
-  display: block;
+  /*   position: absolute;
+  z-index: 2; */
+}
+
+video {
+  /*   position: absolute;
+  top: 0;
+  left: 0; */
+  width: 100%;
+  height: auto;
+  /*   object-fit: cover; */
+  z-index: -1;
+  filter: grayscale(100%);
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
 }
