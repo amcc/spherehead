@@ -108,9 +108,10 @@ function modelReady() {
 
 function draw() {
   background(255);
-  if(width < height {
+  if(width < height) {
     select("#status").html("You might want to turn your device to landscape, it works better that way :)");
-  })
+  };
+  
   let locX = mouseX - height / 2;
   let locY = mouseY - width / 2;
    // ambientLight(10, 10, 10);
